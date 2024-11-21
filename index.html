@@ -2,32 +2,25 @@
 <html lang="es">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Buscador de imágenes de la NASA</title>
-
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Imágenes de la NASA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <main>
-    <div class="text-center container">
-      <div class="row py-lg-3">
-        <div class="col-lg-6 col-md-8 mx-auto">
-          <h1 class="fw-light">Buscador de imágenes de la NASA</h1>
-          <input type="search" class="form-control" name="buscar" id="inputBuscar" placeholder="Ej.: JUPITER">
-          <button class="btn btn-primary my-2" id="btnBuscar">Buscar imágenes</button>
-        </div>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Buscador de imágenes de la NASA</h1>
+    <div class="row mb-4">
+      <div class="col-md-8 offset-md-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Escribe aquí...">
+        <button id="searchButton" class="btn btn-primary mt-3 w-100">Buscar imágenes</button>
       </div>
     </div>
+    <div class="row" id="imageContainer"></div>
+  </div>
+  <script src="app.js"></script>
 
-    <div class="container">
-      <div id="contenedor" class="row">
-        <!-- Las imágenes y la información se agregarán aquí dinámicamente -->
-      </div>
-    </div>
-  </main>
 
   <footer class="text-muted py-5">
     <div class="container">
@@ -42,7 +35,9 @@
   </footer>
 
   <script src="js/space.js"></script> <!-- Enlazamos el archivo JS externo -->
- 
+
+
 </body>
 
 </html>
+

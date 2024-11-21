@@ -1,56 +1,59 @@
-// Código JavaScript para consumir la API y mostrar las imágenes
+const searchButton = document.getElementById('searchButton');
+const searchInput = document.getElementById('searchInput');
+const imageContainer = document.getElementById('imageContainer');
 
-document.getElementById('btnBuscar').addEventListener('click', function() {
-    const query = document.getElementById('inputBuscar').value.trim();
-    if (query) {
-      fetchImages(query);
-    }
-  });
-  
-  function fetchImages(query) {
-    const url = `https://images-api.nasa.gov/search?q=${query}`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.collection.items.length > 0) {
-          displayImages(data.collection.items);
-        } else {
-          alert("No se encontraron imágenes para esa búsqueda.");
-          document.getElementById('contenedor').innerHTML = ''; // Limpiar contenedor si no hay resultados
-        }
-      })
-      .catch(error => {
-        console.error('Error al obtener los datos:', error);
-        alert("Hubo un error al obtener las imágenes.");
-      });
+// Función para realizar la solicitud a la API
+searchButton.addEventListener('click', async () => {
+  const query = searchInput.value.trim(); // Obtener el texto ingresado
+  if (!query) {
+    alert('Por favor, ingresa un término de búsqueda.');
+    return;
   }
-  
-  function displayImages(items) {
-    const contenedor = document.getElementById('contenedor');
-    contenedor.innerHTML = '';  // Limpiar resultados anteriores
-  
-    items.forEach(item => {
-      const { href: imageUrl, data } = item;
-      const title = data[0]?.title || 'Sin título';
-      const description = data[0]?.description || 'No disponible';
-      const date = data[0]?.date_created || 'Fecha no disponible';
-  
-      const card = document.createElement('div');
-      card.classList.add('col-md-4', 'mb-4');
-      
-      card.innerHTML = `
-        <div class="card">
-          <img src="${imageUrl}" class="card-img-top" alt="${title}" onerror="this.onerror=null;this.src='path_to_default_image.jpg';">
-          <div class="card-body">
-            <h5 class="card-title">${title}</h5>
-            <p class="card-text">${description}</p>
-            <p class="card-text"><small class="text-muted">${date}</small></p>
-          </div>
+
+  const url = `https://images-api.nasa.gov/search?q=${query}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Filtrar los resultados que tienen imágenes
+    const items = data.collection.items.filter(item => item.links);
+
+    // Mostrar las imágenes
+    displayImages(items);
+  } catch (error) {
+    console.error('Error al obtener datos de la API:', error);
+    alert('Hubo un error al realizar la búsqueda. Inténtalo más tarde.');
+  }
+});
+
+// Función para mostrar las imágenes en formato tarjeta
+function displayImages(items) {
+  imageContainer.innerHTML = ''; // Limpiar resultados anteriores
+
+  if (items.length === 0) {
+    imageContainer.innerHTML = '<p class="text-center">No se encontraron resultados.</p>';
+    return;
+  }
+
+  items.forEach(item => {
+    const imageUrl = item.links?.[0]?.href || 'placeholder.jpg'; // URL de la imagen
+    const title = item.data?.[0]?.title || 'Sin título';
+    const description = item.data?.[0]?.description || 'Sin descripción';
+    const date = item.data?.[0]?.date_created || 'Fecha no disponible';
+
+    const card = document.createElement('div');
+    card.classList.add('col-md-4', 'mb-4');
+    card.innerHTML = `
+      <div class="card">
+        <img src="${imageUrl}" class="card-img-top" alt="${title}" onerror="this.onerror=null;this.src='placeholder.jpg';">
+        <div class="card-body">
+          <h5 class="card-title">${title}</h5>
+          <p class="card-text">${description}</p>
+          <p class="card-text"><small class="text-muted">${new Date(date).toLocaleDateString()}</small></p>
         </div>
-      `;
-      contenedor.appendChild(card);
-    });
-  }
-  
-  
+      </div>
+    `;
+    imageContainer.appendChild(card);
+  });
+}
